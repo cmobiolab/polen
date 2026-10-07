@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openmm-polen"
+version = "0.0.1"
+description = "POLEN: polarizable embedding of neural-network potentials (ML/MM with mutually polarizable AMOEBA embedding for OpenMM). Placeholder release; under active development."
+readme = "README.md"
+license = "LGPL-3.0-or-later"
+license-files = ["COPYING", "COPYING.LESSER"]
+requires-python = ">=3.10"
+authors = [{ name = "Renato D. Cunha", email = "renato.cunha8@gmail.com" }]
+keywords = ["molecular dynamics", "machine learning potentials", "ML/MM", "QM/MM", "AMOEBA", "polarizable force field", "OpenMM"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+[project.urls]
+Repository = "https://github.com/cmobiolab/polen"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openmm_polen"]

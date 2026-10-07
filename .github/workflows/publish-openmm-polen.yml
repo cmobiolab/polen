@@ -1,0 +1,36 @@
+name: publish-openmm-polen
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build twine
+      - run: |
+          python -m build packaging/openmm-polen --outdir dist-openmm-polen/
+          python -m twine check dist-openmm-polen/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-openmm-polen
+          path: dist-openmm-polen/
+
+  publish-openmm-polen:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi-openmm-polen
+    permissions:
+      id-token: write   # Trusted Publishing (OIDC): no API token needed
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-openmm-polen
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

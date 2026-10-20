@@ -1,11 +1,10 @@
 # POLEN
 
-**POLEN** — machine-learning/molecular-mechanics (ML/MM) simulation tools for [OpenMM](https://openmm.org).
+**POLEN** — POLarizable Embedding for Neural-network potentials, a machine-learning/molecular-mechanics (ML/MM) simulation tool for [OpenMM](https://openmm.org).
 
 ## Status
 
-Under development. This repository currently holds placeholder packages that reserve the `polen` and `openmm-polen`
-names on PyPI.
+Under development.
 
 ## License
 

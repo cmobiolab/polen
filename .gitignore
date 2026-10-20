@@ -1,3 +1,6 @@
 dist/
 *.egg-info/
 __pycache__/
+plugin/build/
+plugin/install/
+.pytest_cache/

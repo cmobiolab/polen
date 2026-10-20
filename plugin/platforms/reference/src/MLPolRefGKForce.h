@@ -1,0 +1,354 @@
+
+/* Portions copyright (c) 2006 Stanford University and Simbios.
+ * Contributors: Pande Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject
+ * to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS, CONTRIBUTORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+#ifndef __MLPolRefGKForce_H__
+#define __MLPolRefGKForce_H__
+
+#include "openmm/Vec3.h"
+#include <vector>
+
+using namespace OpenMM;
+using namespace std;
+
+namespace OpenMM {
+// Copy (OpenMM 8.5.2, MIT license) isolated in OpenMM::MLPolRef so it does not clash with the
+// libOpenMMAmoebaReference symbols, loaded in the same process.
+namespace MLPolRef {
+
+class AmoebaReferenceGeneralizedKirkwoodForce {
+
+public:
+
+    /**
+     *  Constructor
+     *  
+     */
+    AmoebaReferenceGeneralizedKirkwoodForce();
+ 
+    /**
+     *  Destructor
+     *  
+     */
+    ~AmoebaReferenceGeneralizedKirkwoodForce() {};
+ 
+    /**
+     *  Get number of particles 
+     *
+     *  @return numParticles
+     *
+     */
+    int getNumParticles() const;
+
+    /**
+     *  Set numParticles
+     *
+     *  @param numParticles
+     *
+     */
+    void setNumParticles(int numParticles);
+
+    /**
+     * Get includeCavityTerm flag 
+     *
+     * @return includeCavityTerm
+     *
+     */
+    int getIncludeCavityTerm() const;
+
+    /**
+     *  Set includeCavityTerm flag
+     *
+     *  @param includeCavityTerm flag indicating whether surface area term is to be included
+     *
+     */
+    void setIncludeCavityTerm(int includeCavityTerm);
+
+    /**
+     * Get the tanhRescaling flag, which controls whether tanh rescaling of the solute integral is performed.
+     *
+     * @return tanhRescaling The value tanhRescaling flag.
+     */
+    bool getTanhRescaling() const;
+
+    /**
+     *  Set the tanhRescaling flag.
+     *
+     *  @param tanhRescaling if true, tanh rescaling of the solute integral is performed.
+     */
+    void setTanhRescaling(bool tanhRescaling);
+
+    /**
+     * Get Tanh parameters b0, b1 and b2.
+     *
+     * @param b0 The first tanh parameter.
+     * @param b1 The second tanh parameter.
+     * @param b2 The third tanh parameter.
+    */
+    void getTanhParameters(double& b0, double& b1, double& b2) const;
+
+    /**
+     * Set the the Tanh function parameters that account for interstitial spaces.
+     *
+     * @param b0 The first tanh parameter.
+     * @param b1 The second tanh parameter.
+     * @param b2 The third tanh parameter.
+     */
+    void setTanhParameters(double b0, double b1, double b2);
+
+    /**
+     *  Get the descreen offset for calculating Born radii.
+     *
+     *  @return descreenOffset
+     */
+    double getDescreenOffset() const;
+
+    /**
+     * Set descreen offset for calculating Born radii.
+     *
+     * @param descreenOffset descreen offset
+     *
+     */
+    void setDescreenOffset(double descreenOffset);
+
+    /**
+     *  Get directPolarization flag 
+     *
+     *  @return directPolarization
+     *
+     */
+    int getDirectPolarization() const;
+
+    /**
+     *  Set directPolarization flag
+     * 
+     *  @param directPolarization nonzero if direct as opposed to mutual polarization
+     */
+    void setDirectPolarization(int directPolarization);
+
+    /**
+     *  Get solute dielectric
+     *
+     *  @return soluteDielectric
+     */
+    double getSoluteDielectric() const;
+
+    /**
+     *  Set solute dielectric
+     * 
+     *  @param soluteDielectric solute dielectric
+     * 
+     */
+    void setSoluteDielectric(double soluteDielectric);
+
+    /**
+     *  Get solvent dielectric
+     *
+     *  @return solventDielectric
+     *
+     */
+    double getSolventDielectric() const;
+
+    /**
+     *  Set solvent dielectric 
+     *
+     *  @param solventDielectric solvent dielectric
+     *
+     */
+    void setSolventDielectric(double solventDielectric);
+
+    /**
+     *  Get dielectric offset for the cavity term.
+     *
+     *  @return dielectricOffset
+     *
+     */
+    double getDielectricOffset() const;
+
+    /**
+     * Set dielectric offset for the cavity term.
+     *
+     * @param dielectricOffset dielectric offset
+     *
+     */
+    void setDielectricOffset(double dielectricOffset);
+
+    /**
+     * Get probeRadius
+     *
+     * @return probeRadius
+     *
+     */
+    double getProbeRadius() const;
+
+    /**
+     * Set probe radius
+     *
+     * @param probeRadius probe radiue
+     *
+     */
+    void setProbeRadius(double probeRadius);
+
+    /**
+     * Get surfaceAreaFactor
+     *
+     * @return surfaceAreaFactor
+     *
+     */
+    double getSurfaceAreaFactor() const;
+
+    /**
+     * Set surface area factor
+     *
+     * @param surfaceAreaFactor surface area factor
+     *
+     */
+    void setSurfaceAreaFactor(double surfaceAreaFactor);
+
+    /**
+     * Set atomic radii
+     *
+     * @param atomicRadii input vector of atomic radii
+     *
+     */
+    void setAtomicRadii(const vector<double>& atomicRadii);
+
+    /**
+     * Get atomic radii
+     *
+     * @param atomicRadii output vector of atomic radii
+     *
+     */
+    void getAtomicRadii(vector<double>& atomicRadii) const;
+
+    /**
+     * Set scale factors
+     *
+     * @param scaleFactors input vector of scale factors
+     *
+     */
+    void setScaleFactors(const vector<double>& scaleFactors);
+
+    /**
+     * Get scale factors
+     *
+     * @param scaleFactors output vector of scale factors
+     *
+     */
+    void getScaleFactors(vector<double>& scaleFactors) const;
+
+    /**
+     * Set charges
+     *
+     * @param charges input vector of charges
+     *
+     */
+    void setCharges(const vector<double>& charges);
+
+    /**
+     * Set descreen radii
+     *
+     * @param descreenRadii input vector of descreen radii
+     *
+    */
+    void setDescreenRadii(const vector<double>& descreenRadii);
+
+    /**
+     * Get descreen radii
+     *
+     * @param descreenRadii output vector of descreen radii
+     *
+     */
+    void getDescreenRadii(vector<double>& descreenRadii) const;
+
+    /**
+     * Set neck scale factors
+     *
+     * @param neckFactors input vector of neck scale factors
+     */
+    void setNeckFactors(const vector<double>& neckFactors);
+
+    /**
+     * Get neck scale factors
+     *
+     * @param neckFactors output vector of neck scale factors
+     */
+    void getNeckFactors(vector<double>& neckFactors) const;
+
+    /**
+     * Calculate Grycuk Born radii
+     *
+     * @param particlePositions particle positions
+     *
+     */
+    void calculateGrycukBornRadii(const vector<Vec3>& particlePositions);
+         
+    /**
+     * Get Grycik Born radii (must have called calculateGrycukBornRadii())
+     *
+     * @param bornRadii vector of Born radii
+     *
+     */
+    void getGrycukBornRadii(vector<double>& bornRadii) const;
+
+    /**
+     * Get Grycik Solute Integral (must have called calculateGrycukBornRadii())
+     *
+     * @param bornRadii vector of Born radii
+     *
+     */
+    void getSoluteIntegral(vector<double>& soluteIntegral) const;
+
+private:
+
+    int _numParticles;
+    int _includeCavityTerm;
+    int _directPolarization;
+    bool _tanhRescaling;
+    double _descreenOffset;
+
+    double _soluteDielectric;
+    double _solventDielectric;
+    double _dielectricOffset;
+    double _probeRadius;
+    double _surfaceAreaFactor;
+
+    double _beta0;
+    double _beta1;
+    double _beta2;
+
+    std::vector<double> _atomicRadii;
+    std::vector<double> _scaleFactors;
+    std::vector<double> _charges;
+    std::vector<double> _descreenRadii;
+    std::vector<double> _neckFactors;
+
+    std::vector<double> _soluteIntegral;
+    std::vector<double> _bornRadii;
+
+};
+
+} // namespace MLPolRef
+} // namespace OpenMM
+
+#endif // _AmoebaReferenceGeneralizedKirkwoodForce___

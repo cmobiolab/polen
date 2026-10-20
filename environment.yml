@@ -1,0 +1,17 @@
+name: mlmm-pol
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - openmm=8.5.2
+  - pytorch=2.12.1
+  - numpy
+  - scipy
+  - pytest
+  - openmm-torch=1.5.1
+  - openmm-ml=1.7
+  - mdtraj
+  - swig
+  - pip
+  - pip:
+      - mace-torch==0.3.16

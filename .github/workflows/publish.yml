@@ -22,8 +22,8 @@ jobs:
           name: dist-polen
           path: dist-polen/
 
-  # o openmm-polen tem workflow e ambiente próprios (publish-openmm-polen.yml / pypi-openmm-polen): o PyPI não aceita a
-  # mesma configuração de publicador para dois projetos
+  # openmm-polen has its own workflow and environment (publish-openmm-polen.yml / pypi-openmm-polen): PyPI does not
+  # accept the same publisher configuration for two projects
   publish-polen:
     needs: build
     runs-on: ubuntu-latest

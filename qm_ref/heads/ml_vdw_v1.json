@@ -1,0 +1,49 @@
+{
+ "_doc": "Buffered 14-7 vdW of the ML atoms refitted to the MuPE(ML) electrostatics (AMOEBA+/Poltype 2 style): R_min and ε factors per ligand and atom class, fitted to 18 QM ligand–water dimer curves (ωB97M-V/def2-TZVPPD; per-ligand fit with regularization 0.3, two orientations). Applied by mlmmpol/ml_vdw.py.",
+ "systems": {
+  "pna": "pna",
+  "trypsin_ben": "ben",
+  "ck2_tbb_anion_poseA": "tbb",
+  "ck2_tbb_anion_poseB": "tbb"
+ },
+ "scale_R": {
+  "ben": {
+   "C": 1.0577,
+   "HC": 0.497,
+   "HN": 1.0837,
+   "N": 0.9065
+  },
+  "pna": {
+   "C": 0.8704,
+   "HC": 0.9768,
+   "HN": 1.4355,
+   "N": 1.0078,
+   "O": 0.9502
+  },
+  "tbb": {
+   "Br": 0.939,
+   "C": 0.8417,
+   "N": 1.0357
+  }
+ },
+ "scale_eps": {
+  "ben": {
+   "C": 0.4142,
+   "HC": 1.0232,
+   "HN": 0.862,
+   "N": 0.9925
+  },
+  "pna": {
+   "C": 0.9909,
+   "HC": 1.0128,
+   "HN": 0.9469,
+   "N": 0.9622,
+   "O": 0.7193
+  },
+  "tbb": {
+   "Br": 1.0594,
+   "C": 0.9733,
+   "N": 0.5277
+  }
+ }
+}

@@ -154,6 +154,18 @@ CommonCalcMLPolMultipoleForceKernel::CommonCalcMLPolMultipoleForceKernel(const s
         CalcMLPolMultipoleForceKernel(name, platform), cc(cc), system(system), hasInitializedScaleFactors(false), multipolesAreValid(false), hasCreatedEvent(false) {
 }
 
+CommonCalcMLPolMultipoleForceKernel::~CommonCalcMLPolMultipoleForceKernel() {
+    // POLEN: free the head's GPU tensors with PyTorch's (primary) context current, then release that context
+    if (torchContext != NULL) {
+        CUcontext before = NULL;
+        cuCtxGetCurrent(&before);
+        cuCtxSetCurrent((CUcontext) torchContext);
+        mlHead = torch::jit::script::Module();
+        cuCtxSetCurrent(before);
+        cuDevicePrimaryCtxRelease((CUdevice) torchDevice);
+    }
+}
+
 void CommonCalcMLPolMultipoleForceKernel::initialize(const System& system, const AmoebaMultipoleForce& force) {
     ContextSelector selector(cc);
 
@@ -1987,18 +1999,22 @@ void CommonCalcMLPolMultipoleForceKernel::readMLRegion(const AmoebaMultipoleForc
         if (!wantCPU && cu != NULL && torch::cuda::is_available())
             headDevice = torch::Device(torch::kCUDA, cu->getDeviceIndex());
         try {
-            // PyTorch uses the device primary context and makes it current when initializing; OpenMM uses its own
-            // context: save the current one, load, grab the primary one and restore (as in openmm-torch)
+            // PyTorch works in the device primary context; OpenMM uses its own context. Make the primary context current
+            // while loading (the tensors of the head are copied to the GPU here) and restore OpenMM's afterwards. This
+            // must also hold when PyTorch is already initialized (a second Context, or reinitialize()): loading with
+            // OpenMM's context current then crashes inside the host-to-device copy.
             CUcontext before = NULL;
-            if (headDevice.is_cuda())
-                cuCtxGetCurrent(&before);
-            mlHead = torch::jit::load(mlHeadFile, headDevice);
             if (headDevice.is_cuda()) {
+                cuCtxGetCurrent(&before);
                 CUcontext primary;
                 cuDevicePrimaryCtxRetain(&primary, cu->getDevice());
                 torchContext = primary;
-                cuCtxSetCurrent(before);
+                torchDevice = cu->getDevice();
+                cuCtxSetCurrent(primary);
             }
+            mlHead = torch::jit::load(mlHeadFile, headDevice);
+            if (headDevice.is_cuda())
+                cuCtxSetCurrent(before);
         }
         catch (const std::exception& e) {
             throw OpenMMException("MLPolMultipoleForce: could not load the ML head '" + mlHeadFile + "': " + e.what());

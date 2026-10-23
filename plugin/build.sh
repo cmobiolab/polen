@@ -8,7 +8,7 @@ export MLPOL_INSTALL=$(pwd)/install
 CUDA_ROOT=${CUDA_ROOT:-/usr/local/cuda-12.8}
 PY=$OPENMM_DIR/bin/python
 cmake -S . -B build -DOPENMM_DIR=$OPENMM_DIR -DCUDAToolkit_ROOT=$CUDA_ROOT -DCMAKE_CUDA_COMPILER=$CUDA_ROOT/bin/nvcc > build/cmake.log 2>&1 || cmake -S . -B build -DOPENMM_DIR=$OPENMM_DIR -DCUDAToolkit_ROOT=$CUDA_ROOT -DCMAKE_CUDA_COMPILER=$CUDA_ROOT/bin/nvcc
-cmake --build build -j16
+cmake --build build -j${JOBS:-16}
 cmake --install build > /dev/null
 mkdir -p build/python && cd build/python
 $OPENMM_DIR/bin/swig -python -c++ -I$OPENMM_DIR/include -o MLPolPluginWrapper.cpp ../../python/mlpolplugin.i

@@ -17,9 +17,22 @@ import numpy as np
 import openmm as mm
 from openmm import app, unit
 
-# workstation paths; on remote machines, taken from environment variables
-BIO18 = os.environ.get('MLMMPOL_BIO18', '/home/rdcunha/Documentos/SOFT/poltype2/ParameterFiles/amoebabio18.prm')
-PDBXYZ = os.environ.get('MLMMPOL_PDBXYZ', '/home/rdcunha/Documentos/SOFT/tinker/bin/pdbxyz')
+def bio18_path():
+    """AMOEBA BIO18 parameter file: $MLMMPOL_BIO18 (use the copy distributed with Poltype 2, whose ion types match the
+    ones assumed here: Na+ 352, Cl- 361, Mg2+ 357, Ca2+ 358)."""
+    p = os.environ.get('MLMMPOL_BIO18')
+    if not p or not os.path.exists(p):
+        raise FileNotFoundError('set MLMMPOL_BIO18 to the amoebabio18.prm of Poltype 2 (ParameterFiles/amoebabio18.prm)')
+    return p
+
+
+def pdbxyz_path():
+    """Tinker's pdbxyz (needed only for systems with protein residues): $MLMMPOL_PDBXYZ or `pdbxyz` in the PATH."""
+    import shutil
+    p = os.environ.get('MLMMPOL_PDBXYZ') or shutil.which('pdbxyz')
+    if not p:
+        raise FileNotFoundError("Tinker's pdbxyz not found: set MLMMPOL_PDBXYZ or add it to the PATH")
+    return p
 WATER_O, WATER_H, NA, CL, MG, CA = 349, 350, 352, 361, 357, 358
 NONPROTEIN = ('HOH', 'WAT', 'Na+', 'Cl-', 'NA', 'CL', 'MG', 'CA')
 PROTONATION = ('HID', 'HIE', 'HIP', 'CYX', 'ASH', 'GLH', 'LYN', 'CYM')
@@ -58,8 +71,8 @@ def protein_to_tinker(prm, positions, exclude, workdir):
         (workdir / f).unlink(missing_ok=True)
     # parameters via the .key and PDB/chains on the command line: with pdbxyz built by the conda gfortran (Carbono),
     # stdin input disconnects after the first read (unit 5 becomes 'fort.5'); output identical to the stdin route
-    (workdir / 'prot_tinker.key').write_text(f'parameters {BIO18}\n')
-    run = subprocess.run([PDBXYZ, 'prot_tinker.pdb', 'ALL'], cwd=workdir, stdin=subprocess.DEVNULL, capture_output=True,
+    (workdir / 'prot_tinker.key').write_text(f'parameters {bio18_path()}\n')
+    run = subprocess.run([pdbxyz_path(), 'prot_tinker.pdb', 'ALL'], cwd=workdir, stdin=subprocess.DEVNULL, capture_output=True,
                          text=True)
     if not (workdir / 'prot_tinker.xyz').exists():
         raise RuntimeError(f'pdbxyz did not produce prot_tinker.xyz (exit code {run.returncode}):\n{(run.stdout + run.stderr)[-2000:]}')
@@ -168,7 +181,7 @@ if not getattr(app.TinkerFiles._processPeptideChain, '_mlmmpol', False):
 
 def load_amoeba(xyz_path, key_path, box, cutoff=0.9, eps=1e-5, polarization='mutual'):
     """OpenMM AMOEBA system (PME) from the .xyz + amoebabio18.prm + the solute keys."""
-    tk = app.TinkerFiles(str(xyz_path), [BIO18, str(key_path)], periodicBoxVectors=box)
+    tk = app.TinkerFiles(str(xyz_path), [bio18_path(), str(key_path)], periodicBoxVectors=box)
     system = tk.createSystem(nonbondedMethod=app.PME, nonbondedCutoff=cutoff * unit.nanometer,
                              polarization=polarization, mutualInducedTargetEpsilon=eps)
     return tk, system

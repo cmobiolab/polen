@@ -14,7 +14,7 @@ class ToyHead(torch.nn.Module):
 
     def forward(self, r: torch.Tensor):
         n = r.shape[0]
-        eye_n = torch.eye(n, dtype=r.dtype)
+        eye_n = torch.eye(n, dtype=r.dtype, device=r.device)
         d = r[:, None, :] - r[None, :, :]
         dist = torch.sqrt((d * d).sum(-1) + eye_n)
         w = torch.exp(-dist / 0.2) * (1 - eye_n)
@@ -23,7 +23,7 @@ class ToyHead(torch.nn.Module):
         mu = 0.01 * (w[..., None] * (-d)).sum(1)
         dd = d[..., :, None] * d[..., None, :]
         r2 = (d * d).sum(-1)
-        eye3 = torch.eye(3, dtype=r.dtype)
+        eye3 = torch.eye(3, dtype=r.dtype, device=r.device)
         theta = 5e-3 * (w[..., None, None] * (dd - r2[..., None, None] * eye3 / 3.0)).sum(1)
         alpha = self.alpha0 * (1 + 0.2 * torch.tanh(w.sum(1)))
         return q, mu, theta, alpha
@@ -41,7 +41,7 @@ class ToyHeadPen(torch.nn.Module):
     def forward(self, r: torch.Tensor):
         q, mu, theta, alpha = self.base(r)
         n = r.shape[0]
-        eye_n = torch.eye(n, dtype=r.dtype)
+        eye_n = torch.eye(n, dtype=r.dtype, device=r.device)
         d = r[:, None, :] - r[None, :, :]
         dist = torch.sqrt((d * d).sum(-1) + eye_n)
         w = (torch.exp(-dist / 0.2) * (1 - eye_n)).sum(1)

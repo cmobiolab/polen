@@ -1,37 +1,44 @@
 {
-  "_doc": "Presets of the 'ml' mode (MuPE(ML)): head + coupling + ML vdW. 'default' = alpha_s0_vdw1: head and a_cross chosen by the QM/AMOEBA validation, and ML vdW refitted to QM ligand–water dimers (AMOEBA+ strategy). The other presets remain available by name (--ml-preset NAME; --head/--a-cross override).",
-  "default": "alpha_s0_vdw1",
-  "presets": {
-    "alpha_s0": {
-      "head": "v2_final2_alpha_s0",
-      "a_cross": 0.55,
-      "thole_ml": 0.39,
-      "note": "learned α(R) (vacuum); a_cross 0.55 from the joint QM/AMOEBA validation (pNA, trypsin, CK2 A/B; MAE 4.87 kJ/mol; cross-validation 5.11)"
-    },
-    "noalpha_s1": {
-      "head": "v2_final2_noalpha_s1",
-      "a_cross": 0.57,
-      "thole_ml": 0.39,
-      "note": "fixed α = 1.10·α_AMOEBA; a_cross 0.57 from the joint validation (MAE 4.83; cross-validation 5.06)"
-    },
-    "v2_old": {
-      "head": "v2_f128_b3_s0",
-      "a_cross": 0.7,
-      "thole_ml": 0.39,
-      "note": "previous head (without ML/MM window frames, without α(R))"
-    },
-    "alpha_s0_a070": {
-      "head": "v2_final2_alpha_s0",
-      "a_cross": 0.7,
-      "thole_ml": 0.39,
-      "note": "NMA a_cross (0.70): overestimates the interaction in CK2 by ~16 kJ/mol"
-    },
-    "alpha_s0_vdw1": {
-      "head": "v2_final2_alpha_s0",
-      "a_cross": 0.55,
-      "thole_ml": 0.39,
-      "ml_vdw": "ml_vdw_v1.json",
-      "note": "alpha_s0 + ML vdW refitted to QM water-dimer curves (ml_vdw_v1.json); fixes the too-short pNA NH2···water hydrogen bond"
-    }
+ "_doc": "Presets of the 'ml' mode (MuPE(ML)): head + coupling + ML vdW. 'default' = alpha_s0_vdw1: head and a_cross chosen by the QM/AMOEBA validation, and ML vdW refitted to QM ligand–water dimers (AMOEBA+ strategy). The other presets remain available by name (--ml-preset NAME; --head/--a-cross override).",
+ "default": "alpha_s0_vdw1",
+ "presets": {
+  "alpha_s0": {
+   "head": "v2_final2_alpha_s0",
+   "a_cross": 0.55,
+   "thole_ml": 0.39,
+   "note": "learned α(R) (vacuum); a_cross 0.55 from the joint QM/AMOEBA validation (pNA, trypsin, CK2 A/B; MAE 4.87 kJ/mol; cross-validation 5.11)"
+  },
+  "noalpha_s1": {
+   "head": "v2_final2_noalpha_s1",
+   "a_cross": 0.57,
+   "thole_ml": 0.39,
+   "note": "fixed α = 1.10·α_AMOEBA; a_cross 0.57 from the joint validation (MAE 4.83; cross-validation 5.06)"
+  },
+  "v2_old": {
+   "head": "v2_f128_b3_s0",
+   "a_cross": 0.7,
+   "thole_ml": 0.39,
+   "note": "previous head (without ML/MM window frames, without α(R))"
+  },
+  "alpha_s0_a070": {
+   "head": "v2_final2_alpha_s0",
+   "a_cross": 0.7,
+   "thole_ml": 0.39,
+   "note": "NMA a_cross (0.70): overestimates the interaction in CK2 by ~16 kJ/mol"
+  },
+  "alpha_s0_vdw1": {
+   "head": "v2_final2_alpha_s0",
+   "a_cross": 0.55,
+   "thole_ml": 0.39,
+   "ml_vdw": "ml_vdw_v1.json",
+   "note": "alpha_s0 + ML vdW refitted to QM water-dimer curves (ml_vdw_v1.json); fixes the too-short pNA NH2···water hydrogen bond"
+  },
+  "alpha_s0_vdw2": {
+   "head": "v2_final2_alpha_s0",
+   "a_cross": 0.55,
+   "thole_ml": 0.39,
+   "ml_vdw": "ml_vdw_v2.json",
+   "note": "alpha_s0_vdw1 + ML–Na⁺ pair factors (ml_vdw_v2.json); fixes the TBB⁻ N···Na⁺ collapse"
   }
+ }
 }

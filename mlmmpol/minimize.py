@@ -91,11 +91,22 @@ def scipy_minimize(context, tolerance=10.0, max_iterations=5000, max_displacemen
 
 def minimize(context, tolerance=10.0, max_iterations=5000, max_displacement=0.03, log=print):
     """Bounded L-BFGS (default) or, with max_displacement=None, the OpenMM LocalEnergyMinimizer with the bounded
-    L-BFGS as fallback. Returns 'scipy' or 'openmm'."""
+    L-BFGS as fallback. Returns 'scipy' or 'openmm'.
+
+    The bounded L-BFGS moves every particle independently and does not know about constraints; for systems with
+    constraints (e.g. rigid water in the mechanical embedding) the OpenMM minimizer, which enforces them, is used
+    instead, and the constraints are re-applied if the bounded L-BFGS is needed as fallback."""
+    constrained = context.getSystem().getNumConstraints() > 0
+    if constrained and max_displacement is not None:
+        log('system with constraints: using the OpenMM minimizer (the bounded L-BFGS ignores constraints)', flush=True)
+        max_displacement = None
     if max_displacement is None:
         x0 = context.getState(getPositions=True).getPositions()
         try:
+            e0 = context.getState(getEnergy=True).getPotentialEnergy().value_in_unit(mm.unit.kilojoule_per_mole)
             mm.LocalEnergyMinimizer.minimize(context, tolerance, max_iterations)
+            e1 = context.getState(getEnergy=True).getPotentialEnergy().value_in_unit(mm.unit.kilojoule_per_mole)
+            log(f'OpenMM minimizer: E {e0:.1f} -> {e1:.1f} kJ/mol', flush=True)
             return 'openmm'
         except mm.OpenMMException as exc:
             if CPU_FALLBACK_MSG not in str(exc):
@@ -106,6 +117,9 @@ def minimize(context, tolerance=10.0, max_iterations=5000, max_displacement=0.03
         context.computeVirtualSites()
         max_displacement = 0.03
     e0, e1, frms, n, dmax = scipy_minimize(context, tolerance, max_iterations, max_displacement, progress=log)
+    if constrained:
+        context.applyConstraints(1e-6)
+        e1 = context.getState(getEnergy=True).getPotentialEnergy().value_in_unit(mm.unit.kilojoule_per_mole)
     log(f'bounded L-BFGS (±{max_displacement * 10:.1f} Å): E {e0:.1f} -> {e1:.1f} kJ/mol, total RMS force {frms:.2f} '
         f'kJ/mol/nm, {n} evaluations, largest displacement {dmax * 10:.2f} Å', flush=True)
     return 'scipy'

@@ -1,0 +1,14 @@
+source leaprc.protein.ff19SB
+source leaprc.water.opc
+source leaprc.gaff2
+PNA = loadmol2 pna.mol2
+loadamberparams pna.frcmod
+l = loadpdb pna_lig.pdb
+sys = combine { l }
+solvateoct sys OPCBOX 18.0
+addions sys Na+ 0
+addions sys Cl- 0
+addionsrand sys Na+ 6 Cl- 6
+saveamberparm sys pna.prmtop pna.inpcrd
+savepdb sys pna.pdb
+quit

@@ -98,7 +98,7 @@ def test_layered_requires_nocutoff_mutual(setup):
     configure_layered_polarization(f2, top, d['ml'], R_IN, R_OUT)
     system.removeForce(i)
     system.addForce(f2)
-    with pytest.raises(Exception, match='camadas|layered'):
+    with pytest.raises(Exception, match='layered'):
         c = mm.Context(system, mm.VerletIntegrator(1e-3), mm.Platform.getPlatformByName('Reference'))
         c.setPositions(d['pos'])
         c.getState(getEnergy=True)

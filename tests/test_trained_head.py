@@ -14,7 +14,7 @@ import pytest
 import torch
 from openmm import app, unit
 
-from mlmmpol.amber2amoeba import BIO18
+from mlmmpol.amber2amoeba import bio18_path
 from mlmmpol.amoeba_mixed import mask_multipoles
 from mlmmpol.export_head import export_head
 
@@ -53,7 +53,7 @@ def cluster(tmp_path_factory):
             r = rows[old]
             nb = [str(new[int(b) - 1] + 1) for b in r[6:] if int(b) - 1 in new]
             f.write(f'{new[old] + 1:6d}  {r[1]:3s} {r[2]} {r[3]} {r[4]} {r[5]} ' + ' '.join(nb) + '\n')
-    tk = app.TinkerFiles(str(tmp / 'c.xyz'), [BIO18, str(WIN / 'amoeba.key')])
+    tk = app.TinkerFiles(str(tmp / 'c.xyz'), [bio18_path(), str(WIN / 'amoeba.key')])
     system = tk.createSystem(nonbondedMethod=app.NoCutoff, polarization='mutual', mutualInducedTargetEpsilon=1e-10)
     i = next(k for k, f in enumerate(system.getForces()) if isinstance(f, mm.AmoebaMultipoleForce))
     amf = system.getForce(i)

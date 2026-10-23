@@ -159,7 +159,19 @@ def test_ml_derivatives_masked_pair_beyond_cutoff(water_box, platform):
         phi, field = np.array(der['phi']), np.array(der['field']).reshape(-1, 3)
         dal = np.array(der['dAlpha'])
         out[cutoff] = (phi, field, np.array(der['dTheta']), dal)
-        if cutoff == 0.7:
+        if cutoff == 0.7 and platform == 'CUDA':
+            # on CUDA the finite differences of the energy are dominated by rounding (float parameters on the GPU, as in
+            # OpenMM) and fluctuate by several percent; compare the derivatives directly with the Reference platform instead
+            fr, cr, _ = ml_context(top, pos, ml, cutoff, 'Reference')
+            fr.setMLParametersInContext(cr, *[x.tolist() for x in prm])
+            cr.getState(getEnergy=True, groups={1})
+            ref = fr.getMLDerivatives(cr)
+            for key in ('phi', 'field', 'dTheta', 'dAlpha'):
+                a, b = np.array(der[key]), np.array(ref[key])
+                rel = np.abs(a - b).max() / max(1.0, np.abs(b).max())
+                print(f'{platform}: {key} relative difference to Reference = {rel:.1e}')
+                assert rel < 1e-4
+        elif cutoff == 0.7:
             worst = 0.0
             for k in range(len(ml)):
                 pp, pm = [x.copy() for x in prm], [x.copy() for x in prm]
@@ -172,8 +184,7 @@ def test_ml_derivatives_masked_pair_beyond_cutoff(water_box, platform):
                     pm[1][3 * k + c] -= 1e-5
                     worst = max(worst, abs((energy(pp) - energy(pm)) / 2e-5 + field[k, c]) / max(1.0, np.abs(field[k]).max()))
             print(f'{platform}: worst relative error phi/E vs finite differences = {worst:.1e}')
-            # on CUDA the energy has ~1e-4 kJ/mol noise (float parameters on the GPU, as in OpenMM): the finite
-            # differences fluctuate by ~1%; the derivatives themselves = Reference (~1e-6). The error fixed here was systematic (53%).
-            assert worst < (1e-3 if platform == 'Reference' else 2e-2)
+            # the error fixed here (pairs masked beyond the cutoff) was systematic, 53%
+            assert worst < 1e-3
     for a, b in zip(out[0.7], out[1.15]):
         assert np.abs(a - b).max() < 2e-2 * max(1.0, np.abs(b).max()), np.abs(a - b).max()

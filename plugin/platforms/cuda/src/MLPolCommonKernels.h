@@ -44,6 +44,7 @@ using namespace OpenMM;
 class CommonCalcMLPolMultipoleForceKernel : public CalcMLPolMultipoleForceKernel {
 public:
     CommonCalcMLPolMultipoleForceKernel(const std::string& name, const Platform& platform, ComputeContext& cc, const System& system);
+    ~CommonCalcMLPolMultipoleForceKernel();
     /**
      * Initialize the kernel.
      * 
@@ -221,7 +222,8 @@ protected:
     bool hasHead = false;
     torch::jit::script::Module mlHead;
     torch::Device headDevice = torch::kCPU;   // POLEN: the context CUDA device (default) or CPU (MLPOL_HEAD_DEVICE=cpu)
-    void* torchContext = NULL;                // PyTorch primary CUcontext (OpenMM uses its own context)
+    void* torchContext = NULL;                // PyTorch primary CUcontext (OpenMM uses its own context), retained
+    int torchDevice = -1;                     // CUdevice whose primary context is retained (released in the destructor)
     std::vector<double> penN, penS, penDN, penDS;
     double executeAmoeba(ContextImpl& context, bool includeForces, bool includeEnergy);
     // layers

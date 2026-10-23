@@ -18,18 +18,36 @@ PyPI names are reserved by placeholder packages (`packaging/`).
     penetration) and geometry-dependent polarizabilities; forces include the analytic derivatives through the head.
     The ML–MM van der Waals is refitted to QM ligand–water dimers (AMOEBA+ strategy).
 
+## Quick start
+
+```python
+import mlmmpol as polen
+
+amoeba = polen.amber_to_amoeba('pna.prmtop', 'pna.rst7', [('PNA', 'final.xyz', 'final.key')], 'work/amoeba')
+ml = amoeba.atoms_of_residues(['PNA'])
+system, force = polen.create_mupe_system(amoeba.topology, amoeba.system, ml, multipoles='ml', ligand='pna',
+                                         workdir='work')
+polen.run_md(system, amoeba.topology, amoeba.positions, 'work', ns=1.0, box=amoeba.box)
+```
+
+Or from the command line: `python -m mlmmpol run --embedding mupe-ml ...` (see the manual).
+
+**Manual:** [`docs/index.md`](docs/index.md) (installation, concepts, user guide, API reference, presets, examples,
+limitations). **Examples:** [`examples/`](examples) (runnable scripts with data). **Changes:** [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Layout
 
 | path | content |
 |---|---|
 | `plugin/` | OpenMM plugin (C++/CUDA, SWIG wrapper) |
-| `mlmmpol/` | Python tools: mixed ML/AMOEBA systems, head export, presets, ML vdW, minimizer |
-| `qm_ref/heads/` | trained heads used by the presets, `presets.json`, `ml_vdw_v1.json` |
+| `mlmmpol/` | Python package: high-level API (`create_mupe_system`, `amber_to_amoeba`, `run_md`, ...), command line, mixed systems, head export, presets, ML vdW, minimizer |
+| `qm_ref/heads/` | trained heads used by the presets, `presets.json`, ML–MM vdW refits |
+| `examples/` | example scripts and their data |
+| `docs/` | manual |
 | `ref_torch/` | PyTorch reference implementation (used by the tests) |
 | `tests/`, `systems/`, `qm_ref/nma_frames.npz` | tests and their small data files |
-| `docs/plugin.md` | technical summary of the plugin (Portuguese) |
 
-Installation: see [INSTALL.md](INSTALL.md). Version: [VERSION](VERSION).
+Installation: see [`docs/installation.md`](docs/installation.md). Version: [VERSION](VERSION).
 
 ## License
 

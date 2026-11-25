@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (unreleased)
+
+- **Examples**: `07_trypsin_ben.py` (trypsin–benzamidinium) and `08_ck2_tbb.py` (CK2α–TBB⁻, poses A and B), each with
+  the mechanical, MuPE(FF) and MuPE(ML) embeddings, with their Amber/Poltype data: together with examples 3–5 (pNA)
+  they cover all ML/MM windows of the paper.
+
 ## 0.1.0 (unreleased)
 
 First usable version.

@@ -1,0 +1,23 @@
+Remark line goes here
+MASS
+
+BOND
+
+ANGLE
+
+DIHE
+nv-ce-nv-hn   4    4.200       180.000           2.000      same as X -cc-nh-X , penalty score=136.0
+ca-ca-ce-nv   1     0.6856    180.0    -2.0      ajuste QM
+ca-ca-ce-nv   1     0.0926      0.0     4.0      ajuste QM
+ca-ce-nv-hn   4    4.200       180.000           2.000      same as X -cc-nh-X , penalty score=136.0
+
+IMPROPER
+ce-hn-nv-hn         1.1          180.0         2.0          Using the default value
+ca-nv-ce-nv        10.5          180.0         2.0          Same as X -X -cc-X , penalty score= 37.0 (use general term))
+ca-ca-ca-ce         1.1          180.0         2.0          Same as c2-ca-ca-ca, penalty score= 21.9)
+ca-ca-ca-ha         1.1          180.0         2.0          Using general improper torsional angle  X- X-ca-ha, penalty score=  6.0)
+
+NONBON
+
+
+

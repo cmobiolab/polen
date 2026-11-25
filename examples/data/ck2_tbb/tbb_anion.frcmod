@@ -1,0 +1,17 @@
+Remark line goes here
+MASS
+
+BOND
+
+ANGLE
+
+DIHE
+ca-nb-nb-nb   1    4.000       180.000           2.000      same as X -nc-nc-X , penalty score=161.0
+
+IMPROPER
+ca-ca-ca-nb        10.5          180.0         2.0          Same as X -X -cc-X , penalty score= 41.9 (use general term))
+
+NONBON
+
+
+

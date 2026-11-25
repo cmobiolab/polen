@@ -4,8 +4,11 @@ This guide follows the path used for the systems of the paper: an Amber system (
 for the ligand, conversion to AMOEBA, the ML/MM system and the simulation. Every step has a runnable counterpart in
 [`examples/`](examples.md).
 
+`mlmmpol` is the ML/MM module of POLEN (the ML/MM workflow with the mutually polarizable embedding); the examples
+import it under the project name:
+
 ```python
-import mlmmpol as polen      # the package is called mlmmpol; polen is just a short alias
+import mlmmpol as polen
 ```
 
 ## 1. Inputs

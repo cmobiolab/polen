@@ -38,7 +38,9 @@ replicas, all window outputs and the analysis scripts are in the Zenodo deposit 
 - `ck2_tbb/`: CK2α–TBB⁻ (PDB 6TLL) in the two binding poses (81 883 and 81 871 particles):
   - `ck2_tbb_anion_pose{A,B}_tleap.in`, `6TLL_amber.pdb`, `tbb_anion_pose{A,B}.pdb`, `xwat_anion_pose{A,B}.pdb`,
     `tbb_anion.mol2`, `tbb_anion.frcmod`: the tleap inputs and the files used to build them;
-  - `ck2_tbb_anion_pose{A,B}.prmtop`, `.rst7`: the Amber topologies and the final frames of the first 100 ns replicas;
+  - `ck2_tbb_anion_pose{A,B}.prmtop`, `.rst7`: the Amber topologies and the starting frames of the first ML/MM window
+    of the paper (pose A: the end of the first 100 ns replica; pose B: the last frame of that replica with TBB⁻ still in
+    pose B, since in Amber the ligand leaves pose B in four of five replicas);
   - `final.xyz`, `final.key`, `tbb_anion.sdf`: the Poltype 2 AMOEBA parameters of TBB⁻.
 
 ## What to expect
